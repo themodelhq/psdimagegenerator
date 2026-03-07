@@ -1,0 +1,32 @@
+[build]
+  command = "pnpm run build:client"
+  publish = "dist/public"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+
+# ── API proxy → Render backend ─────────────────────────────────────────────────
+# Replace YOUR_RENDER_APP_NAME with your actual Render service name.
+# Example: https://psd-image-generator-api.onrender.com
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR_RENDER_APP_NAME.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# ── Socket.io proxy → Render backend ──────────────────────────────────────────
+[[redirects]]
+  from = "/socket.io/*"
+  to = "https://YOUR_RENDER_APP_NAME.onrender.com/socket.io/:splat"
+  status = 200
+  force = true
+
+# ── SPA fallback ───────────────────────────────────────────────────────────────
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  NODE_ENV = "production"
